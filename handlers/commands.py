@@ -1,7 +1,7 @@
 from aiogram import Router
 from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.filters import Command
-from services.voice_practice import send_practice_phrase
+from aiogram.fsm.context import FSMContext
 from services.logger import log_dialog, log_error
 
 router = Router()
@@ -27,13 +27,14 @@ async def cmd_help(message: Message):
         await message.answer('Произошла ошибка.')
 
 @router.message(Command("practice"))
-async def cmd_practice(message: Message):
+async def cmd_practice(message: Message, state: FSMContext):
     try:
-        response = 'Языковая практика: сейчас отправлю голосовую фразу...'
+        response = '🎯 Перенаправляю вас к системе практики...'
         await message.answer(response)
-        phrase = await send_practice_phrase(message)
-        log_dialog(message.from_user.id, '/practice', response + f' [{phrase["text"]}]')
-        # TODO: интеграция с FSM/state
+        # Перенаправляем к practice_handler
+        from handlers.practice_handler import practice_session
+        await practice_session(message, state)
+        log_dialog(message.from_user.id, '/practice', response)
     except Exception as e:
         log_error(f"Practice error: {e}")
         await message.answer('Произошла ошибка.')

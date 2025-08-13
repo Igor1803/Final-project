@@ -1,6 +1,4 @@
 aiogram>=3.20.0
-speechrecognition
-openai-whisper
-gtts
+speech_recognition
 pydub
 python-dotenv 

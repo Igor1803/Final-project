@@ -14,4 +14,16 @@ def find_faq_answer(user_question: str):
 
 def need_operator(user_question: str):
     # Если нет ответа в FAQ — нужен оператор
-    return find_faq_answer(user_question) is None 
+    return find_faq_answer(user_question) is None
+
+def handle_support_message(user_question: str):
+    """Обработка сообщения поддержки"""
+    try:
+        answer = find_faq_answer(user_question)
+        if answer:
+            return answer, False  # Ответ найден, оператор не нужен
+        else:
+            return "Извините, я не нашел ответ на ваш вопрос. Перевожу вас к оператору.", True  # Нужен оператор
+    except Exception as e:
+        print(f"Ошибка обработки поддержки: {e}")
+        return "Произошла ошибка. Перевожу вас к оператору.", True 
